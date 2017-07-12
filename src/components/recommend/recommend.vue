@@ -23,7 +23,7 @@
 
  <script type="text/ecmascript-6">
   import Slider from 'base/slider/slider'
-  import {getRecommend} from 'api/recommend'
+  import {getRecommend, getDiscList} from 'api/recommend'
   import {ERR_OK} from 'api/config'
   
   export default {
@@ -34,6 +34,7 @@
     },
     created () {
       this._getRecommend()
+      this._getDiscList()
     },
     methods: {
       // 获取推荐幻灯片数据
@@ -41,6 +42,15 @@
         getRecommend().then((res) => {
           if (res.code === ERR_OK) {
             this.recommends = res.data.slider
+          }
+        })
+      },
+
+       // 获取歌单列表数据
+      _getDiscList () {
+        getDiscList().then((res) => {
+          if (res.code === ERR_OK) {
+            console.log(res)
           }
         })
       }
