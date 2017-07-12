@@ -1,3 +1,4 @@
+// 请求接口公用的参数
 export const commonParams = {
   g_tk: 5381,
   inCharset: 'utf-8',
@@ -6,6 +7,7 @@ export const commonParams = {
   format: 'jsonp'
 }
 
+// 回调参数
 export const options = {
   param: 'jsonpCallback'
 }
