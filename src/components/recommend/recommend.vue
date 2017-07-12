@@ -26,6 +26,9 @@
         </ul>
       </div>
       </div>
+      <div class="loading-container" v-show="!discList.length">
+        <loading></loading>
+      </div>
     </scroll>
     <router-view></router-view>
   </div>
@@ -34,6 +37,7 @@
  <script type="text/ecmascript-6">
   import Slider from 'base/slider/slider'
   import Scroll from 'base/scroll/scroll'
+  import Loading from 'base/loading/loading'
   import {getRecommend, getDiscList} from 'api/recommend'
   import {ERR_OK} from 'api/config'
   
@@ -47,6 +51,10 @@
     created () {
       this._getRecommend()
       this._getDiscList()
+
+      // setTimeout(() => {
+      //   this._getDiscList()
+      // }, 5000)
     },
     methods: {
       // 获取推荐幻灯片数据
@@ -75,7 +83,8 @@
     },
     components: {
       Slider,
-      Scroll
+      Scroll,
+      Loading
     }
   }
 </script>
