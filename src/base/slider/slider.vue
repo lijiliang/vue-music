@@ -121,6 +121,10 @@
           this.slider.goToPage(pageIndex, 0, 400)
         }, this.interval)
       }
+    },
+    destroyed () {
+      // 在组件销毁后，清除定时器
+      clearTimeout(this.timer)
     }
   }
 </script>
