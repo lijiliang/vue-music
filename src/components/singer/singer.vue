@@ -10,6 +10,7 @@
   import {ERR_OK} from 'api/config'
   import Singer from 'common/js/singer'
   import Listview from 'base/listView/listView'
+  import {mapMutations} from 'vuex'
 
   const HOT_SINGER_LEN = 10
   const HOT_NAME = '热门'
@@ -24,11 +25,14 @@
       this._getSingerList()
     },
     methods: {
-      // 派发点击
+      // 派发点击 跳转路由到详情页
       selectSinger (singer) {
+        // vue-router 编程式导航 router.push(...)
         this.$router.push({
           path: `/singer/${singer.id}`
         })
+        // 把singer传入到store
+        this.setSinger(singer)
       },
       // 获取歌手列表
       _getSingerList () {
@@ -91,7 +95,10 @@
         })
         // 返回数据 一维数组
         return hot.concat(ret)
-      }
+      },
+      ...mapMutations({
+        setSinger: 'SET_SINGER'
+      })
     },
     components: {
       Listview
