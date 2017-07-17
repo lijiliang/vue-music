@@ -19,7 +19,7 @@ const matutaions = {
   },
   // 播放列表
   [types.SET_PLAYLIST] (state, list) {
-    state.paylist = list
+    state.playlist = list
   },
   // 顺序播放列表
   [types.SET_SEQUENCE_LIST] (state, list) {
