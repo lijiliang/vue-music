@@ -19,7 +19,7 @@
         <div class="middle">
           <div class="middle-l">
             <div class="cd-wrapper" ref="cdWrapper">
-              <div class="cd">
+              <div class="cd" :class="cdCls">
                 <img class="image" :src="currentSong.image">
                 </div>
             </div>
@@ -29,9 +29,15 @@
       <div class="bottom">
         <div class="operators">
           <div class="icon i-left"><i class="icon-sequence"></i></div>
-          <div class="icon i-left"><i class="icon-prev"></i></div>
-          <div class="icon i-center"><i class="icon-play"></i></div>
-          <div class="icon i-right"><i class="icon-next"></i></div>
+          <div class="icon i-left" @class="disableCls">
+            <i @click="prev" class="icon-prev"></i>
+          </div>
+          <div class="icon i-center" @class="disableCls">
+            <i @click="togglePlaying" :class="playIcon"></i>
+          </div>
+          <div class="icon i-right" @class="disableCls">
+            <i @click="next" class="icon-next"></i>
+          </div>
           <div class="icon i-right">
             <i class="icon icon-not-favorite"></i>
           </div>
@@ -43,21 +49,23 @@
     <transition name="mini">
     <div class="mini-player" v-show="!fullScreen" @click="open">
       <div class="icon">
-        <img width="40" height="40" :src="currentSong.image">
+        <img :class="cdCls" width="40" height="40" :src="currentSong.image">
       </div>
       <div class="text">
         <h2 class="name" v-html="currentSong.name"></h2>
         <p class="desc" v-html="currentSong.singer"></p>
       </div>
       <div class="control">
-
+        <i @click.stop="togglePlaying" :class="miniIcon"></i>
       </div>
       <div class="control">
         <i class="icon-playlist"></i>
       </div>
     </div>
     </transition>
+    <audio ref="audio" :src="currentSong.url" @canplay="ready" @error="error"></audio>
   </div>
+  
 </template>
 
  <script type="text/ecmascript-6">
@@ -67,11 +75,32 @@
 
   const transform = prefixStyle('transform')
   export default {
+    data () {
+      return {
+        songReady: false  // 歌曲标致位
+      }
+    },
     computed: {
+      // 改变播放按钮图标
+      playIcon () {
+        return this.playing ? 'icon-pause' : 'icon-play'
+      },
+      miniIcon () {
+        return this.playing ? 'icon-pause-mini' : 'icon-play-mini'
+      },
+      // 唱片旋转
+      cdCls () {
+        return this.playing ? 'play' : 'play pause'
+      },
+      disableCls () {
+        return this.songReady ? '' : 'disable'
+      },
       ...mapGetters([
         'fullScreen',
         'playlist',
-        'currentSong'
+        'currentSong',
+        'playing',
+        'currentIndex'
       ])
     },
     methods: {
@@ -83,10 +112,58 @@
       open () {
         this.setFullScreen(true)
       },
-      // 通过mutations 修改 大的播放器展开收起
-      ...mapMutations({
-        setFullScreen: 'SET_FULL_SCREEN'
-      }),
+      // 播放 暂停
+      togglePlaying () {
+        if (!this.songReady) {
+          return
+        }
+        this.setPlayingState(!this.playing)
+      },
+      // 上一首
+      prev () {
+        if (!this.songReady) {
+          return
+        }
+        let index = this.currentIndex - 1
+        if (index === -1) {
+          index = this.playlist.length - 1
+        }
+        this.setCurrentIndex(index)
+
+        // 如果是暂停状态，切换下首歌，修改play状态
+        if (!this.playing) {
+          this.togglePlaying()
+        }
+
+        this.songReady = false
+      },
+      // 下一首
+      next () {
+        // 如果播放器状态没准备好，不允许点击下一首
+        if (!this.songReady) {
+          return
+        }
+        let index = this.currentIndex + 1
+        if (index === this.playlist.length) {  // 最后一首
+          index = 0
+        }
+        this.setCurrentIndex(index)
+
+        // 如果是暂停状态，切换下首歌，修改play状态
+        if (!this.playing) {
+          this.togglePlaying()
+        }
+
+        this.songReady = false
+      },
+      // 当audio准备好后，控制audio状态
+      ready () {
+        this.songReady = true
+      },
+      // audio error回调
+      error () {
+        this.songReady = true
+      },
       // 动画效果
       enter (el, done) {
         const {x, y, scale} = this._getPosAndScale()
@@ -143,6 +220,26 @@
           y,
           scale
         }
+      },
+      // 通过mutations 修改数据
+      ...mapMutations({
+        setFullScreen: 'SET_FULL_SCREEN',
+        setPlayingState: 'SET_PLAYING_STATE',
+        setCurrentIndex: 'SET_CURRENT_INDEX'
+      })
+    },
+    watch: {
+      currentSong () {
+        this.$nextTick(() => {
+          this.$refs.audio.play()
+        })
+      },
+      // watch 播放按钮
+      playing (newPlaying) {
+        const audio = this.$refs.audio   // 存dom 缓存
+        this.$nextTick(() => {
+          newPlaying ? audio.play() : audio.pause()
+        })
       }
     }
   }
