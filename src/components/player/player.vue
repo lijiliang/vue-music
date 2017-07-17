@@ -27,6 +27,14 @@
         </div>
       <!-- 操作区 -->
       <div class="bottom">
+        <!-- 进度条 -->
+        <div class="progress-wrapper">
+          <span class="time time-l">{{format(currentTime)}}</span>
+          <div class="progress-bar-wrapper">
+            <progress-bar :percent="percent" @percentChange="onProgressBarChange"></progress-bar>
+          </div>
+          <span class="time time-r">{{format(currentSong.duration)}}</span>
+        </div>
         <div class="operators">
           <div class="icon i-left"><i class="icon-sequence"></i></div>
           <div class="icon i-left" @class="disableCls">
@@ -63,7 +71,7 @@
       </div>
     </div>
     </transition>
-    <audio ref="audio" :src="currentSong.url" @canplay="ready" @error="error"></audio>
+    <audio ref="audio" :src="currentSong.url" @canplay="ready" @error="error" @timeupdate="updateTime"></audio>
   </div>
   
 </template>
@@ -72,12 +80,14 @@
   import animations from 'create-keyframe-animation'
   import {mapGetters, mapMutations} from 'vuex'
   import {prefixStyle} from 'common/js/dom'
+  import ProgressBar from 'base/progress-bar/progress-bar'
 
   const transform = prefixStyle('transform')
   export default {
     data () {
       return {
-        songReady: false  // 歌曲标致位
+        songReady: false,  // 歌曲标致位
+        currentTime: 0     // 当前时间
       }
     },
     computed: {
@@ -94,6 +104,10 @@
       },
       disableCls () {
         return this.songReady ? '' : 'disable'
+      },
+      // 歌曲播放比例  当前播放时间 / 歌曲总时长
+      percent () {
+        return this.currentTime / this.currentSong.duration
       },
       ...mapGetters([
         'fullScreen',
@@ -163,6 +177,33 @@
       // audio error回调
       error () {
         this.songReady = true
+      },
+      // audio 时间回调函数
+      updateTime (e) {
+        this.currentTime = e.target.currentTime
+      },
+      // 拖放完，改变位置
+      onProgressBarChange (percent) {
+        this.$refs.audio.currentTime = this.currentSong.duration * percent   // 利用当前歌曲的总时长 * 百分比  = 当前歌曲所在的时间的值
+        if (!this.playing) {
+          this.togglePlaying()
+        }
+      },
+      // 根据时间截返回分和秒 分：秒
+      format (interval) {
+        interval = interval | 0
+        const minute = interval / 60 | 0
+        const second = this._pad(interval % 60)
+        return `${minute}:${second}`
+      },
+      // 补零
+      _pad (num, n = 2) {
+        let len = num.toString().length
+        while (len < n) {
+          num = '0' + num
+          len++
+        }
+        return num
       },
       // 动画效果
       enter (el, done) {
@@ -241,6 +282,9 @@
           newPlaying ? audio.play() : audio.pause()
         })
       }
+    },
+    components: {
+      ProgressBar
     }
   }
 </script>
