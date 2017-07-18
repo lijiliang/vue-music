@@ -41,8 +41,10 @@
   import Loading from 'base/loading/loading'
   import {getRecommend, getDiscList} from 'api/recommend'
   import {ERR_OK} from 'api/config'
+  import {playlistMixin} from 'common/js/mixin'
   
   export default {
+    mixins: [playlistMixin],
     data () {
       return {
         recommends: [],
@@ -80,6 +82,12 @@
           this.$refs.scroll.refresh()
           this.checkLoaded = true
         }
+      },
+      // 如果有小播放器，则加bottom:60px
+      handlePlaylist (playlist) {
+        const bottom = playlist.length > 0 ? '60px' : ''
+        this.$refs.recommend.style.bottom = bottom
+        this.$refs.scroll.refresh()
       }
     },
     components: {

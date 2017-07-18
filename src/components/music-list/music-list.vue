@@ -32,12 +32,14 @@ import Loading from 'base/loading/loading'
 import SongList from 'base/song-list/song-list'
 import {prefixStyle} from 'common/js/dom'
 import {mapActions} from 'vuex'
+import {playlistMixin} from 'common/js/mixin'
 
 const RESERVED_HEIGHT = 40 // 预留的偏移量
 const transform = prefixStyle('transform')
 const backdrop = prefixStyle('backdrop-filter')
 
 export default {
+  mixins: [playlistMixin],
   props: {
     bgImage: {
       type: String,
@@ -90,6 +92,12 @@ export default {
       this.randomPlay({
         list: this.songs
       })
+    },
+    // 如果有小播放器在，scroll 底下要加 bottom: 60px
+    handlePlaylist (playlist) {
+      const bottom = playlist.length > 0 ? '60px' : ''
+      this.$refs.list.$el.style.bottom = bottom
+      this.$refs.list.refresh()
     },
     ...mapActions([
       'selectPlay',
