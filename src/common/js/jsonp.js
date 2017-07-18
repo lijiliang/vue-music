@@ -12,7 +12,6 @@ import originJsonp from 'jsonp'
 export default function jsonp (url, data, option) {
   // 拼接url，如果url没有问号，则增加 ？符号，否则就加 & 符号
   url += (url.indexOf('?') < 0 ? '?' : '&') + param(data)
-
   return new Promise((resolve, reject) => {
     originJsonp(url, option, (err, data) => {
       if (!err) {

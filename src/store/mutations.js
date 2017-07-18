@@ -32,6 +32,10 @@ const matutaions = {
   // 当前播放的歌曲
   [types.SET_CURRENT_INDEX] (state, index) {
     state.currentIndex = index
+  },
+  // 歌单数据
+  [types.SET_DISC] (state, disc) {
+    state.disc = disc
   }
 }
 

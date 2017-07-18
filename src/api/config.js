@@ -9,7 +9,8 @@ export const commonParams = {
 
 // 回调参数
 export const options = {
-  param: 'jsonpCallback'
+  param: 'jsonpCallback',
+  prefix: 'jp'
 }
 
 // 成功状态码
