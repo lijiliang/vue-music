@@ -1,3 +1,5 @@
+import {getLyric} from 'api/song'
+import {ERR_OK} from 'api/config'
 // 歌曲列表抽象
 export default class Song {
   constructor ({id, mid, singer, name, album, duration, image, url}) {
@@ -9,6 +11,14 @@ export default class Song {
     this.duration = duration
     this.image = image
     this.url = url
+  }
+  // 获取歌词
+  getLyric () {
+    getLyric(this.mid).then((res) => {
+      if (res.retcode === ERR_OK) {
+        this.lyric = res.lyric
+      }
+    })
   }
 }
 
@@ -37,3 +47,4 @@ function filterSinger (singer) {
   })
   return ret.join('/')
 }
+

@@ -49,7 +49,12 @@
       },
       // 点击bar改变位置
       progressClick (e) {
-        this._offset(e.offsetX)  // 设置点击时偏移量
+        // 这里当我们点击 progressBtn 的时候，offsetX 获取不对
+        // this._offset(e.offsetX)  // 设置点击时偏移量
+
+        const rect = this.$refs.progressBar.getBoundingClientRect()
+        const offsetWidth = e.pageX - rect.left
+        this._offset(offsetWidth)
         this._triggerPercent()   // 派出这个事件出去
       },
       _triggerPercent () {
