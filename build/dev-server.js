@@ -52,7 +52,7 @@ apiRouter.get('/lyric', function(req, res){
     },
     params: req.query
   }).then((response) => {
-    // 处理数据成json
+    // 将callbackJson 处理数据成json
     var ret = response.data
     if (typeof ret === 'string') {
         var reg = /^\w+\(({[^()]+})\)$/
