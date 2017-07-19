@@ -36,6 +36,10 @@ const matutaions = {
   // 歌单数据
   [types.SET_DISC] (state, disc) {
     state.disc = disc
+  },
+  // 排行数据
+  [types.SET_TOP_LIST] (state, topList) {
+    state.topList = topList
   }
 }
 

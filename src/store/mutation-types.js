@@ -14,3 +14,5 @@ export const SET_PLAY_MODE = 'SET_PLAY_MODE' // 播放模式
 export const SET_CURRENT_INDEX = 'SET_CURRENT_INDEX' // 当前播放的歌曲
 
 export const SET_DISC = 'SET_DISC' // 歌单数据
+
+export const SET_TOP_LIST = 'SET_TOP_LIST' // 排行数据
