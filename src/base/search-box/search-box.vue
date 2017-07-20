@@ -6,7 +6,8 @@
   </div>
 </template>
 
-<script type="text/ecmascript-6">
+ <script type="text/ecmascript-6">
+  import {debounce} from 'common/js/util'
   export default {
     props: {
       placeholder: {
@@ -31,9 +32,15 @@
     },
     created () {
       // 当query改变的时候，它就能派发一个query事件出去，告诉外部的组件：我有变化
-      this.$watch('query', (newQuery) => {
+
+      // this.$watch('query', (newQuery) => {
+      //   this.$emit('query', newQuery)
+      // })
+
+      // 使用了截流
+      this.$watch('query', debounce((newQuery) => {
         this.$emit('query', newQuery)
-      })
+      }, 200))
     }
   }
 </script>
