@@ -92,6 +92,34 @@ export const insertSong = function ({commit, state}, song) {
   commit(types.SET_PLAYING_STATE, true)
 }
 
+// 删除一首歌
+export const deleteSong = function ({commit, state}, song) {
+  let playlist = state.playlist.slice()   // 加.slice() 是复制数组副本
+  let sequenceList = state.sequenceList.slice()
+  let currentIndex = state.currentIndex
+  let pIndex = findIndex(playlist, song)
+  playlist.splice(pIndex, 1)
+  let sIndex = findIndex(sequenceList, song)
+  sequenceList.splice(sIndex, 1)
+
+  if (currentIndex > pIndex || currentIndex === playlist.length) {
+    currentIndex--
+  }
+
+  commit(types.SET_PLAYLIST, playlist)
+  commit(types.SET_SEQUENCE_LIST, sequenceList)
+  commit(types.SET_CURRENT_INDEX, currentIndex)
+
+  const playingState = playlist.length > 0
+  // 如果删除完了，将播放按钮设为false
+  // if (!playlist.length) {
+  //   commit(types.SET_PLAYING_STATE, false)
+  // } else {
+  //   commit(types.SET_PLAYING_STATE, true)
+  // }
+  commit(types.SET_PLAYING_STATE, playingState)
+}
+
 // 搜索历史
 export const saveSearchHisstory = function ({commit}, query) {
   commit(types.SET_SEARCH_HISTORY, savSearch(query))
@@ -105,4 +133,12 @@ export const deleteSearchHistory = function ({commit}, query) {
 // 删除所有历史记录
 export const clearSearchHistory = function ({commit}) {
   commit(types.SET_SEARCH_HISTORY, clearSearch())
+}
+
+// 清空所有歌曲列表
+export const deleteSongList = function ({commit}) {
+  commit(types.SET_PLAYLIST, [])
+  commit(types.SET_SEQUENCE_LIST, [])
+  commit(types.SET_CURRENT_INDEX, -1)
+  commit(types.SET_PLAYING_STATE, false)
 }
