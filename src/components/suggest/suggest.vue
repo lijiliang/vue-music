@@ -2,7 +2,9 @@
   <scroll class="suggest" 
       :data="result" 
       :pullup="pullup"
+      :beforeScroll="beforeScroll"
       @scrollToEnd="searchMore"
+      @beforeScroll="listScroll"
       ref="suggest"
   >
     <ul class="suggest-list">
@@ -51,6 +53,7 @@
         page: 1,
         result: [],
         pullup: true,
+        beforeScroll: true,
         hasMore: true
       }
     },
@@ -111,6 +114,13 @@
         } else {
           this.insertSong(item)
         }
+        this.$emit('select')   // 派发一个搜索历史的事件
+      },
+      refresh () {
+        this.$refs.suggest.refresh()
+      },
+      listScroll () {
+        this.$emit('listScroll')
       },
       // 查看是否有更多数据
       _checkMore (data) {

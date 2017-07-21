@@ -19,6 +19,7 @@ export function shuffle (arr) {
 }
 
 // 截流函数
+// 利用函数柯里化，调用函数，返回一个函数
 export function debounce (func, delay) {
   let timer
   return function (...args) {

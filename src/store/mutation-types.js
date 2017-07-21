@@ -16,3 +16,5 @@ export const SET_CURRENT_INDEX = 'SET_CURRENT_INDEX' // 当前播放的歌曲
 export const SET_DISC = 'SET_DISC' // 歌单数据
 
 export const SET_TOP_LIST = 'SET_TOP_LIST' // 排行数据
+
+export const SET_SEARCH_HISTORY = 'SET_SEARCH_HISTORY' // 搜索历史

@@ -40,6 +40,10 @@ const matutaions = {
   // 排行数据
   [types.SET_TOP_LIST] (state, topList) {
     state.topList = topList
+  },
+  // 搜索历史
+  [types.SET_SEARCH_HISTORY] (state, history) {
+    state.searchHistory = history
   }
 }
 
