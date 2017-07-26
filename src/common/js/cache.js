@@ -3,8 +3,12 @@ import storage from 'good-storage'
 
 const SEARCH_KEY = '__search__'  // 搜索key
 const SEARCH_MAX_LENGTH = 15  // 最大存15条
+
 const PLAY_KEY = '__play__'  // 播放历史key
 const PLAY_MAX_LEN = 200  // 最大值200条
+
+const FAVORITE_KEY = '__favorite__'  // 收藏key
+const FAVORITE_MAX_LEN = 200
 
 /**
  * insertArray 插入数组
@@ -102,4 +106,31 @@ export function savePlay (song) {
 // 读播放记录
 export function loadPlay () {
   return storage.get(PLAY_KEY, [])
+}
+
+// 收藏
+export function savaFavorite (song) {
+  let songs = storage.get(FAVORITE_KEY, [])
+  insertArray(songs, song, (item) => {
+    return songs.id === item.id
+  }, FAVORITE_MAX_LEN)
+
+  storage.set(FAVORITE_KEY, songs)
+  return songs
+}
+
+// 删除收藏
+export function deleteFavorite (song) {
+  let songs = storage.get(FAVORITE_KEY, [])
+  deleteFromArray(songs, (item) => {
+    return song.id === item.id
+  })
+
+  storage.set(FAVORITE_KEY, songs)
+  return songs
+}
+
+// 读收藏
+export function loadFavorite () {
+  return storage.get(FAVORITE_KEY, [])
 }

@@ -20,3 +20,5 @@ export const SET_TOP_LIST = 'SET_TOP_LIST' // 排行数据
 export const SET_SEARCH_HISTORY = 'SET_SEARCH_HISTORY' // 搜索历史
 
 export const SET_PLAY_HISTORY = 'SET_PLAY_HISTORY'  // 播放历史
+
+export const SET_FAVORITE_LIST = 'SET_FAVORITE_LIST'  // 收藏列表

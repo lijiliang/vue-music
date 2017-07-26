@@ -48,6 +48,10 @@ const matutaions = {
   // 播放历史
   [types.SET_PLAY_HISTORY] (state, history) {
     state.playHistory = history
+  },
+  // 收藏列表
+  [types.SET_FAVORITE_LIST] (state, list) {
+    state.favoriteList = list
   }
 }
 
