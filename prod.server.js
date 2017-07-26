@@ -1,12 +1,11 @@
 var express = require('express')
-var config = require('./config/index')
 var axios = require('axios')
 
 var app = express()
 
 // 设置代理请求
 var apiRouter = express.Router()
-apiRouter.get('/getDiscList', function(req, res){
+apiRouter.get('/getDiscList', function (req, res) {
   var url = 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg'
 
   axios.get(url, {
@@ -23,7 +22,7 @@ apiRouter.get('/getDiscList', function(req, res){
 })
 
 // 获取歌词
-apiRouter.get('/lyric', function(req, res){
+apiRouter.get('/lyric', function (req, res) {
   var url = 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg'
 
   axios.get(url, {
@@ -38,7 +37,7 @@ apiRouter.get('/lyric', function(req, res){
     if (typeof ret === 'string') {
         var reg = /^\w+\(({[^()]+})\)$/
         var matches = ret.match(reg)
-        if(matches) {
+        if (matches) {
           ret = JSON.parse(matches[1])
         }
     }
@@ -52,10 +51,10 @@ app.use('/api', apiRouter)
 
 app.use(express.static('./dist'))
 
-var port = process.env.PORT || config.build.port
+var port = process.env.PORT || 9000
 
-module.exports = app.listen(port, function(err){
-  if(err){
+module.exports = app.listen(port, function (err) {
+  if (err) {
     console.log(err)
     return
   }
