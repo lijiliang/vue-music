@@ -98,7 +98,7 @@
     </div>
     </transition>
     <playlist ref="playlist"></playlist>
-    <audio ref="audio" :src="currentSong.url" @canplay="ready" @error="error" @timeupdate="updateTime" @ended="end"></audio>
+    <audio ref="audio" :src="currentSong.url" @play="ready" @error="error" @timeupdate="updateTime" @ended="end"></audio>
   </div>
   
 </template>
@@ -216,6 +216,7 @@
         // 如果歌曲列表只有一首歌，那么直接进行单曲循环
         if (this.playlist.length === 1) {
           this.loop()
+          return
         } else {
           let index = this.currentIndex + 1
           if (index === this.playlist.length) {  // 最后一首
@@ -235,6 +236,7 @@
         // 如果是单曲循环
         if (this.mode === playMode.loop) {
           this.loop()
+          return
         } else {
           this.next()  // 跳到下一首
         }
@@ -282,6 +284,9 @@
       // 获取歌词
       getLyric () {
         this.currentSong.getLyric().then((lyric) => {
+          if (this.currentSong.lyric !== lyric) {
+            return
+          }
           this.currentLyric = new Lyric(lyric, this.handleLyric)
           if (this.playing) {
             this.currentLyric.play()
@@ -454,8 +459,12 @@
         // 如果换掉下一首，歌词要从头开始滚动
         if (this.currentLyric) {
           this.currentLyric.stop()
+          this.currentTime = 0
+          this.playingLyric = ''
+          this.currentLineNum = 0
         }
-        setTimeout(() => {
+        clearTimeout(this.timer)
+        this.timer = setTimeout(() => {
           this.$refs.audio.play()
           // this.currentSong.getLyric()
           this.getLyric()
