@@ -9,6 +9,10 @@ import VueLazyLoad from 'vue-lazyload'
 
 import 'common/stylus/index.styl'
 
+/* eslint-disable no-unused-vars */
+// import vConsole from 'vconsole'
+// console.log('test')
+
 fastclick.attach(document.body)
 
 // 注册第三方插件
