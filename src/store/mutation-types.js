@@ -18,3 +18,5 @@ export const SET_DISC = 'SET_DISC' // 歌单数据
 export const SET_TOP_LIST = 'SET_TOP_LIST' // 排行数据
 
 export const SET_SEARCH_HISTORY = 'SET_SEARCH_HISTORY' // 搜索历史
+
+export const SET_PLAY_HISTORY = 'SET_PLAY_HISTORY'  // 播放历史

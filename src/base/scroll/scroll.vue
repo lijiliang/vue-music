@@ -33,6 +33,10 @@
       beforeScroll: {
         type: Boolean,
         default: false
+      },
+      refreshDelay: {  // 多久刷新
+        type: Number,
+        default: 20
       }
     },
     mounted () {
@@ -96,7 +100,7 @@
       data () {
         setTimeout(() => {
           this.refresh()
-        }, 20)
+        }, this.refreshDelay)
       }
     }
   }

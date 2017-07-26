@@ -23,3 +23,5 @@ export const disc = state => state.disc  // 歌单数据
 export const topList = state => state.topList // 排行数据
 
 export const searchHistory = state => state.searchHistory // 搜索历史
+
+export const playHistory = state => state.playHistory // 播放历史

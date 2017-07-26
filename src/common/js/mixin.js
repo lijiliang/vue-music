@@ -1,5 +1,8 @@
+import {mapGetters, mapMutations, mapActions} from 'vuex'
+import { playMode } from 'common/js/config'
+import { shuffle } from 'common/js/util'
 
-import {mapGetters} from 'vuex'
+// 如果有小播放器时，公用的一些处理，比如bottom: 60px
 export const playlistMixin = {
   computed: {
     ...mapGetters([
@@ -21,5 +24,84 @@ export const playlistMixin = {
     handlePlaylist () {
       throw new Error('component must implement handlePlaylist method')
     }
+  }
+}
+
+// 播放模式icon
+export const playerMixin = {
+  computed: {
+    iconMode () {
+      return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
+    },
+    ...mapGetters([
+      'sequenceList',
+      'currentSong',
+      'playlist',
+      'mode'
+    ])
+  },
+  methods: {
+    // 改变播放模式
+    changeMode () {
+      const mode = (this.mode + 1) % 3
+      this.setPlayMode(mode)
+
+      let list = null
+      if (mode === playMode.random) {
+        list = shuffle(this.sequenceList)
+      } else {
+        list = this.sequenceList
+      }
+      this.resetCurrentIndex(list)
+      this.setPlayList(list)  // 改变播放列表
+    },
+    resetCurrentIndex (list) {
+      let index = list.findIndex((item) => {
+        return item.id === this.currentSong.id
+      })
+      this.setCurrentIndex(index)
+    },
+    ...mapMutations({
+      setPlayingState: 'SET_PLAYING_STATE',
+      setCurrentIndex: 'SET_CURRENT_INDEX',
+      setPlayMode: 'SET_PLAY_MODE',
+      setPlayList: 'SET_PLAYLIST'
+    })
+  }
+}
+
+// 搜索mixin
+export const searchMixin = {
+  data () {
+    return {
+      query: '',
+      refreshDelay: 100
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'searchHistory'
+    ])
+  },
+  methods: {
+    // query改变后,设置query值
+    onQueryChange (query) {
+      this.query = query
+    },
+    blurInput () {
+      this.$refs.searchBox.blur()
+    },
+    // 保存搜索历史
+    saveSearch () {
+      this.saveSearchHisstory(this.query)
+    },
+    // 点击热门搜索关键字，将关键字填充到搜索框内
+    addQuery (query) {
+      this.$refs.searchBox.setQuery(query)
+    },
+    ...mapActions([
+      'saveSearchHisstory',
+      'deleteSearchHistory'
+    ])
   }
 }

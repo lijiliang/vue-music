@@ -105,19 +105,20 @@
 
  <script type="text/ecmascript-6">
   import animations from 'create-keyframe-animation'
-  import {mapGetters, mapMutations} from 'vuex'
+  import {mapGetters, mapMutations, mapActions} from 'vuex'
   import {prefixStyle} from 'common/js/dom'
   import ProgressBar from 'base/progress-bar/progress-bar'
   import ProgressCircle from 'base/progress-circle/progress-circle'
   import { playMode } from 'common/js/config'
-  import { shuffle } from 'common/js/util'
   import Lyric from 'lyric-parser'
   import Scroll from 'base/scroll/scroll'
   import Playlist from 'components/playlist/playlist'
+  import {playerMixin} from 'common/js/mixin'
 
   const transform = prefixStyle('transform')
   const transitionDuration = prefixStyle('transitionDuration')
   export default {
+    mixins: [playerMixin],
     data () {
       return {
         songReady: false,  // 歌曲标致位
@@ -131,9 +132,9 @@
     },
     computed: {
       // 播放模式
-      iconMode () {
-        return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
-      },
+      // iconMode () {
+      //   return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
+      // },
       // 改变播放按钮图标
       playIcon () {
         return this.playing ? 'icon-pause' : 'icon-play'
@@ -249,6 +250,7 @@
       // 当audio准备好后，控制audio状态
       ready () {
         this.songReady = true
+        this.savePlayHistory(this.currentSong)  // 增加到播放记录
       },
       // audio error回调
       error () {
@@ -269,26 +271,6 @@
         if (this.currentLyric) {
           this.currentLyric.seek(currentTime * 1000)
         }
-      },
-      // 改变播放模式
-      changeMode () {
-        const mode = (this.mode + 1) % 3
-        this.setPlayMode(mode)
-
-        let list = null
-        if (mode === playMode.random) {
-          list = shuffle(this.sequenceList)
-        } else {
-          list = this.sequenceList
-        }
-        this.resetCurrentIndex(list)
-        this.setPlayList(list)  // 改变播放列表
-      },
-      resetCurrentIndex (list) {
-        let index = list.findIndex((item) => {
-          return item.id === this.currentSong.id
-        })
-        this.setCurrentIndex(index)
       },
       // 根据时间截返回分和秒 分：秒
       format (interval) {
@@ -453,12 +435,11 @@
       },
       // 通过mutations 修改数据
       ...mapMutations({
-        setFullScreen: 'SET_FULL_SCREEN',
-        setPlayingState: 'SET_PLAYING_STATE',
-        setCurrentIndex: 'SET_CURRENT_INDEX',
-        setPlayMode: 'SET_PLAY_MODE',
-        setPlayList: 'SET_PLAYLIST'
-      })
+        setFullScreen: 'SET_FULL_SCREEN'
+      }),
+      ...mapActions([
+        'savePlayHistory'
+      ])
     },
     watch: {
       currentSong (newSong, oldSong) {
