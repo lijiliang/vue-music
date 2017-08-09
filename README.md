@@ -23,3 +23,9 @@ npm start
 ```shell
 npm run build
 ```
+
+## 线上部署
+```shell
+node prod.server.js
+```
+
